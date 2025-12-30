@@ -72,9 +72,17 @@ export default function PlayScreen() {
   const lockPulse = useRef(new Animated.Value(1)).current;
   const lastHapticMinute = useRef<number | null>(null);
   const hideHero = isSaved && tab === 'play';
+  const useProxy = process.env.NODE_ENV === 'production' && typeof window !== 'undefined';
+  const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
 
   const matchday = matches[0]?.matchday ?? 12;
   const userName = 'You';
+  const footballProxy = (path: string) =>
+    `/.netlify/functions/football-data?path=${encodeURIComponent(path)}`;
+  const getFootballRequest = (path: string) => ({
+    url: useProxy ? footballProxy(path) : `https://api.football-data.org/v4/${path}`,
+    headers: !useProxy && apiKey ? { 'X-Auth-Token': apiKey } : undefined,
+  });
 
   useEffect(() => {
     loadMatches()
@@ -126,8 +134,7 @@ export default function PlayScreen() {
   }, []);
 
   useEffect(() => {
-    const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
-    if (!apiKey) {
+    if (!apiKey && !useProxy) {
       setMatchesError('Missing API key for fixtures.');
       setMatches([]);
       return;
@@ -138,11 +145,9 @@ export default function PlayScreen() {
     const matchday = 19;
     const targetDate = '2025-12-30';
     const fetchFixturesWindow = async () => {
-      const url = `https://api.football-data.org/v4/competitions/PL/matches?matchday=${matchday}`;
-      const response = await fetch(url, {
-        headers: {
-          'X-Auth-Token': apiKey,
-        },
+      const request = getFootballRequest(`competitions/PL/matches?matchday=${matchday}`);
+      const response = await fetch(request.url, {
+        headers: request.headers,
         signal: controller.signal,
       });
       if (!response.ok) {
@@ -239,17 +244,13 @@ export default function PlayScreen() {
   }, []);
 
   useEffect(() => {
-    const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
-    if (!apiKey) {
+    if (!apiKey && !useProxy) {
       return;
     }
     const today = new Date();
     const season = today.getMonth() >= 7 ? today.getFullYear() : today.getFullYear() - 1;
-    fetch(`https://api.football-data.org/v4/competitions/PL/standings?season=${season}`, {
-      headers: {
-        'X-Auth-Token': apiKey,
-      },
-    })
+    const request = getFootballRequest(`competitions/PL/standings?season=${season}`);
+    fetch(request.url, { headers: request.headers })
       .then((response) => response.json())
       .then((data) => {
         const standings = data?.standings?.[0]?.table;
@@ -269,8 +270,7 @@ export default function PlayScreen() {
   }, []);
 
   useEffect(() => {
-    const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
-    if (!apiKey || matches.length === 0) {
+    if ((!apiKey && !useProxy) || matches.length === 0) {
       return;
     }
     // Odds requests removed to avoid RapidAPI rate limits.
@@ -428,19 +428,12 @@ export default function PlayScreen() {
     if (!teamId || recentByTeam[teamId]) {
       return;
     }
-    const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
-    if (!apiKey) {
+    if (!apiKey && !useProxy) {
       return;
     }
     try {
-      const response = await fetch(
-        `https://api.football-data.org/v4/teams/${teamId}/matches?status=FINISHED&limit=5`,
-        {
-          headers: {
-            'X-Auth-Token': apiKey,
-          },
-        }
-      );
+      const request = getFootballRequest(`teams/${teamId}/matches?status=FINISHED&limit=5`);
+      const response = await fetch(request.url, { headers: request.headers });
       if (!response.ok) {
         throw new Error(`Recent form request failed (${response.status}).`);
       }
@@ -468,19 +461,14 @@ export default function PlayScreen() {
   };
 
   const fetchHeadToHead = async (match: Match) => {
-    const apiKey = process.env.EXPO_PUBLIC_FOOTBALL_DATA_KEY;
-    if (!apiKey || !match.homeTeam.id || !match.awayTeam.id) {
+    if ((!apiKey && !useProxy) || !match.homeTeam.id || !match.awayTeam.id) {
       return;
     }
     const awayTeamId = String(match.awayTeam.id);
     setH2hLoading((current) => ({ ...current, [match.id]: true }));
     try {
-      const url = `https://api.football-data.org/v4/teams/${match.homeTeam.id}/matches?status=FINISHED&limit=10`;
-      const response = await fetch(url, {
-        headers: {
-          'X-Auth-Token': apiKey,
-        },
-      });
+      const request = getFootballRequest(`teams/${match.homeTeam.id}/matches?status=FINISHED&limit=10`);
+      const response = await fetch(request.url, { headers: request.headers });
       if (!response.ok) {
         throw new Error(`Head-to-head request failed (${response.status}).`);
       }
