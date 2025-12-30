@@ -6,6 +6,7 @@ import { Best6Logo } from '@/components/best6-logo';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { loadProfileName } from '@/data/best6-store';
 import { supabase } from '@/lib/supabase';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -13,6 +14,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
   const [profileName, setProfileName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -24,8 +26,14 @@ export default function ProfileScreen() {
       if (data.user?.email) {
         setEmail(data.user.email);
       }
+      const metadataName =
+        (data.user?.user_metadata?.full_name as string | undefined) ??
+        (data.user?.user_metadata?.name as string | undefined);
+      if (metadataName && !profileName) {
+        setProfileName(metadataName);
+      }
     });
-  }, []);
+  }, [profileName]);
 
   return (
     <Screen style={styles.container}>
@@ -33,34 +41,34 @@ export default function ProfileScreen() {
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
           <Best6Logo size={64} />
-          <ThemedText type="title">Your Profile</ThemedText>
-          <ThemedText type="bodyMuted">Manage your identity and competition stats.</ThemedText>
+          <ThemedText type="title">{t('profileTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('profileIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Name</ThemedText>
-          <ThemedText type="bodyMuted">{profileName || 'Not set'}</ThemedText>
+          <ThemedText type="subtitle">{t('profileNameLabel')}</ThemedText>
+          <ThemedText type="bodyMuted">{profileName || t('profileNotSet')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Email</ThemedText>
-          <ThemedText type="bodyMuted">{email || 'Not available'}</ThemedText>
+          <ThemedText type="subtitle">{t('profileEmailLabel')}</ThemedText>
+          <ThemedText type="bodyMuted">{email || t('profileNotAvailable')}</ThemedText>
         </View>
         <View style={[styles.statRow, { borderColor: palette.divider }]}>
           <View style={styles.stat}>
             <ThemedText type="subtitle">24</ThemedText>
             <ThemedText type="caption" style={{ color: palette.textMuted }}>
-              Rounds played
+              {t('profileRoundsPlayed')}
             </ThemedText>
           </View>
           <View style={styles.stat}>
             <ThemedText type="subtitle">128</ThemedText>
             <ThemedText type="caption" style={{ color: palette.textMuted }}>
-              Total points
+              {t('profileTotalPoints')}
             </ThemedText>
           </View>
           <View style={styles.stat}>
             <ThemedText type="subtitle">6</ThemedText>
             <ThemedText type="caption" style={{ color: palette.textMuted }}>
-              Leagues
+              {t('profileLeagues')}
             </ThemedText>
           </View>
         </View>
@@ -75,6 +83,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 16,
   },
   card: {
@@ -102,3 +111,5 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 export type ThemedTextProps = TextProps & {
@@ -23,11 +24,26 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'body',
+  children,
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const mutedColor = useThemeColor({ light: lightColor, dark: darkColor }, 'textMuted');
   const linkColor = useThemeColor({ light: lightColor, dark: darkColor }, 'tint');
+  const { language } = useLanguage();
+
+  const localizedChildren =
+    language === 'ku'
+      ? (Array.isArray(children) ? children : [children]).map((child) => {
+          if (typeof child === 'number' || typeof child === 'string') {
+            return String(child).replace(/\d/g, (digit) => {
+              const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+              return map[Number(digit)] ?? digit;
+            });
+          }
+          return child;
+        })
+      : children;
 
   return (
     <Text
@@ -44,8 +60,9 @@ export function ThemedText({
         type === 'button' ? styles.button : undefined,
         style,
       ]}
-      {...rest}
-    />
+      {...rest}>
+      {localizedChildren}
+    </Text>
   );
 }
 

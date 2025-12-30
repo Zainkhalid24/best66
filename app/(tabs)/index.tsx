@@ -1,6 +1,7 @@
 import * as Sharing from 'expo-sharing';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Image } from 'expo-image';
+import * as Haptics from 'expo-haptics';
 import {
   ActivityIndicator,
   Animated,
@@ -69,6 +70,8 @@ export default function PlayScreen() {
   const shareShotRef = useRef<React.ElementRef<typeof ViewShot> | null>(null);
   const minuteScrollRef = useRef<ScrollView | null>(null);
   const lockPulse = useRef(new Animated.Value(1)).current;
+  const lastHapticMinute = useRef<number | null>(null);
+  const hideHero = isSaved && tab === 'play';
 
   const matchday = matches[0]?.matchday ?? 12;
   const userName = 'You';
@@ -103,6 +106,16 @@ export default function PlayScreen() {
     setFirstGoalMinute(String(clamped));
     setFirstGoalError('');
     minuteScrollRef.current?.scrollTo({ y: (clamped - 1) * 36, animated: true });
+  };
+
+  const updateMinuteFromScroll = (nextValue: number) => {
+    const clamped = Math.min(120, Math.max(1, nextValue));
+    if (lastHapticMinute.current !== clamped) {
+      lastHapticMinute.current = clamped;
+      Haptics.selectionAsync().catch(() => undefined);
+    }
+    setFirstGoalMinute(String(clamped));
+    setFirstGoalError('');
   };
 
   useEffect(() => {
@@ -551,7 +564,7 @@ export default function PlayScreen() {
 
   const renderLiveBadge = () => (
     <View style={[styles.liveBadge, { backgroundColor: palette.tint }]}>
-      <ThemedText type="caption" style={{ color: palette.surface }}>
+      <ThemedText type="caption" style={{ color: palette.buttonText }}>
         LIVE
       </ThemedText>
     </View>
@@ -573,7 +586,7 @@ export default function PlayScreen() {
     const backgroundColor = isExact ? palette.success : palette.danger;
     return (
       <View style={[styles.resultBadge, { backgroundColor }]}>
-        <ThemedText type="caption" style={{ color: palette.surface }}>
+        <ThemedText type="caption" style={{ color: palette.buttonText }}>
           {`${result.home}-${result.away}`}
         </ThemedText>
       </View>
@@ -583,7 +596,6 @@ export default function PlayScreen() {
   const handleSave = async () => {
     if (isSaved) {
       setIsSaved(false);
-      setPendingRound(null);
       setSaveNotice('');
       return;
     }
@@ -662,7 +674,8 @@ export default function PlayScreen() {
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <ThemedView style={[styles.hero, { backgroundColor: palette.surface }]}>
+        {!hideHero && (
+          <ThemedView style={[styles.hero, { backgroundColor: palette.surface }]}>
           <View style={[styles.heroHalo, { backgroundColor: palette.surfaceAlt }]} />
           <View style={styles.heroImageWrap}>
             <Image
@@ -680,7 +693,7 @@ export default function PlayScreen() {
                 <ThemedText type="label" style={{ color: palette.textMuted }}>
                   {t('matchday')} {matchday}
                 </ThemedText>
-                <ThemedText type="display">Prediction Room</ThemedText>
+                <ThemedText type="display">{t('predictionRoom')}</ThemedText>
               </View>
             </View>
             <View style={[styles.pointsBadge, { backgroundColor: palette.surfaceAlt }]}>
@@ -693,7 +706,8 @@ export default function PlayScreen() {
         <ThemedText type="bodyMuted" style={styles.heroCopy}>
             Get 6 correct picks and win 6,000,000 IQD.
         </ThemedText>
-        </ThemedView>
+          </ThemedView>
+        )}
 
         <View style={styles.segmented}>
           {(['play', 'result', 'schedule'] as TabKey[]).map((key) => {
@@ -708,7 +722,7 @@ export default function PlayScreen() {
                 ]}>
                 <ThemedText
                   type="button"
-                  style={{ color: active ? palette.surface : palette.text }}>
+                  style={{ color: active ? palette.buttonText : palette.text }}>
                   {t(key)}
                 </ThemedText>
               </Pressable>
@@ -723,7 +737,57 @@ export default function PlayScreen() {
         ) : null}
 
         {tab === 'play' && (
-          <View style={styles.matchList}>
+          <>
+            {isSaved ? (
+              <View style={styles.savedBlock}>
+                {matches.map((match) => {
+                  const prediction = predictions[match.id] ?? { home: 0, away: 0 };
+                  return (
+                    <View
+                      key={match.id}
+                      style={[styles.savedRow, { borderColor: palette.divider }]}>
+                      {renderTeamBadge(match, 'home', 'large')}
+                      <View style={styles.savedCenter}>
+                        <ThemedText type="subtitle">VS</ThemedText>
+                        <ThemedText type="caption" style={{ color: palette.textMuted }}>
+                          Your prediction
+                        </ThemedText>
+                        <ThemedText type="subtitle">
+                          {(prediction.home ?? 0)}-{(prediction.away ?? 0)}
+                        </ThemedText>
+                      </View>
+                      {renderTeamBadge(match, 'away', 'large')}
+                    </View>
+                  );
+                })}
+                {saveError ? (
+                  <ThemedText type="caption" style={{ color: palette.danger }}>
+                    {saveError}
+                  </ThemedText>
+                ) : null}
+                {saveNotice ? (
+                  <ThemedText type="caption" style={{ color: palette.textMuted }}>
+                    {saveNotice}
+                  </ThemedText>
+                ) : null}
+                <View style={styles.savedActions}>
+                  <Pressable
+                    onPress={handleShare}
+                    style={[styles.secondaryButton, styles.savedButton, { borderColor: palette.divider }]}>
+                    <ThemedText type="button">{t('sharePicks')}</ThemedText>
+                  </Pressable>
+                  <Pressable
+                    onPress={handleSave}
+                    disabled={saving}
+                    style={[styles.primaryButton, styles.savedButton, { backgroundColor: palette.tint }]}>
+                    <ThemedText type="button" style={{ color: palette.buttonText }}>
+                      {saving ? 'Saving...' : 'Edit'}
+                    </ThemedText>
+                  </Pressable>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.matchList}>
             {matches.some((match) => match.status === 'IN_PLAY' || match.status === 'PAUSED') ? (
               <ThemedText type="caption" style={{ color: palette.textMuted }}>
                 Live scores update every 30 seconds.
@@ -918,18 +982,16 @@ export default function PlayScreen() {
               );
             })}
             <View style={[styles.tieBreakerCard, { borderColor: palette.divider }]}>
-              <ThemedText type="subtitle">First goal tie-breaker</ThemedText>
+              <ThemedText type="subtitle">{t('firstGoalTieBreaker')}</ThemedText>
               {!isSaved ? (
-                <ThemedText type="bodyMuted">
-                  If points are tied, the closest first-goal minute wins.
-                </ThemedText>
+                <ThemedText type="bodyMuted">{t('tieBreakerHint')}</ThemedText>
               ) : null}
               <View style={styles.minuteHeader}>
                 <ThemedText type="caption" style={{ color: palette.textMuted }}>
-                  Selected minute
+                  {t('selectedMinute')}
                 </ThemedText>
                 <ThemedText type="caption" style={{ color: palette.textMuted }}>
-                  Range 1 - 120
+                  {t('minuteRange')}
                 </ThemedText>
               </View>
               <View style={styles.minuteControlRow}>
@@ -951,17 +1013,11 @@ export default function PlayScreen() {
                         onScroll={(event) => {
                           const offsetY = event.nativeEvent.contentOffset.y;
                           const index = Math.round(offsetY / 36);
-                          const minute = Math.min(120, Math.max(1, index + 1));
-                          if (minute.toString() !== firstGoalMinute) {
-                            setFirstGoalMinute(String(minute));
-                            setFirstGoalError('');
-                          }
+                          updateMinuteFromScroll(index + 1);
                         }}
                         onMomentumScrollEnd={(event) => {
                           const index = Math.round(event.nativeEvent.contentOffset.y / 36);
-                          const minute = Math.min(120, Math.max(1, index + 1));
-                          setFirstGoalMinute(String(minute));
-                          setFirstGoalError('');
+                          updateMinuteFromScroll(index + 1);
                         }}>
                         {Array.from({ length: 120 }, (_, index) => {
                           const value = index + 1;
@@ -970,7 +1026,10 @@ export default function PlayScreen() {
                             <View key={value} style={styles.minuteScrollItem}>
                               <ThemedText
                                 type="subtitle"
-                                style={{ color: isSelected ? palette.text : palette.textMuted }}>
+                                style={[
+                                  { color: isSelected ? palette.text : palette.textMuted },
+                                  isSelected ? styles.minuteActiveText : styles.minuteInactiveText,
+                                ]}>
                                 {value}
                               </ThemedText>
                             </View>
@@ -981,12 +1040,20 @@ export default function PlayScreen() {
                         pointerEvents="none"
                         style={[styles.minuteScrollHighlight, { borderColor: palette.divider }]}
                       />
+                      <View pointerEvents="none" style={styles.minuteOverlay}>
+                        <ThemedText type="subtitle" style={styles.minuteOverlayText}>
+                          {firstGoalMinute.trim() || '1'}
+                        </ThemedText>
+                        <ThemedText type="caption" style={styles.minuteOverlayUnit}>
+                          {t('minuteUnit')}
+                        </ThemedText>
+                      </View>
                     </View>
                   )}
                 </View>
               </View>
               <ThemedText type="caption" style={[styles.minuteSelectedLabel, { color: palette.textMuted }]}>
-                {`Selected: ${firstGoalMinute.trim() || '1'}`}
+                {`${t('selectedValue')}: ${firstGoalMinute.trim() || '1'}`}
               </ThemedText>
               {!isSaved ? (
                 <View style={styles.minutePresetRow}>
@@ -1039,13 +1106,15 @@ export default function PlayScreen() {
                   onPress={handleSave}
                   disabled={saving}
                   style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-                  <ThemedText type="button" style={{ color: palette.surface }}>
+                  <ThemedText type="button" style={{ color: palette.buttonText }}>
                     {saving ? 'Saving...' : isSaved ? 'Edit' : t('savePicks')}
                   </ThemedText>
                 </Pressable>
               </Animated.View>
             </View>
           </View>
+            )}
+          </>
         )}
 
         {tab === 'result' && (
@@ -1126,7 +1195,7 @@ export default function PlayScreen() {
               </View>
               <View style={[styles.tieBreakerRow, { borderColor: palette.divider }]}>
                 <ThemedText type="caption" style={{ color: palette.textMuted }}>
-                  First goal minute (tie-breaker)
+                  {t('firstGoalMinuteTie')}
                 </ThemedText>
                 <ThemedText type="subtitle">
                   {firstGoalMinute.trim() ? firstGoalMinute : '—'}
@@ -1158,7 +1227,7 @@ export default function PlayScreen() {
                     ]}>
                     <ThemedText
                       type="button"
-                      style={{ color: active ? palette.surface : palette.text }}>
+                      style={{ color: active ? palette.buttonText : palette.text }}>
                       {t(filter)}
                     </ThemedText>
                   </Pressable>
@@ -1300,7 +1369,7 @@ export default function PlayScreen() {
               <Pressable
                 onPress={() => setShowSaveModal(false)}
                 style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-                <ThemedText type="button" style={{ color: palette.surface }}>
+                <ThemedText type="button" style={{ color: palette.buttonText }}>
                   OK
                 </ThemedText>
               </Pressable>
@@ -1387,6 +1456,30 @@ const styles = StyleSheet.create({
   },
   matchList: {
     gap: 14,
+  },
+  savedBlock: {
+    gap: 16,
+  },
+  savedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+  },
+  savedCenter: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  savedActions: {
+    gap: 12,
+    marginTop: 8,
+  },
+  savedButton: {
+    width: '100%',
+    alignSelf: 'stretch',
+    flex: 0,
   },
   shareCard: {
     position: 'absolute',
@@ -1597,8 +1690,8 @@ const styles = StyleSheet.create({
     height: 42,
   },
   teamName: {
-    fontSize: 12,
-    lineHeight: 14,
+    fontSize: 16,
+    lineHeight: 20,
   },
   teamNameRight: {
     textAlign: 'right',
@@ -1811,6 +1904,32 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 12,
     borderWidth: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+  },
+  minuteOverlay: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    top: 42,
+    height: 36,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  minuteOverlayText: {
+    fontSize: 28,
+    lineHeight: 32,
+    fontFamily: Fonts.headingAlt,
+  },
+  minuteOverlayUnit: {
+    opacity: 0.8,
+  },
+  minuteActiveText: {
+    opacity: 0,
+  },
+  minuteInactiveText: {
+    opacity: 0.25,
   },
   minutePresetRow: {
     marginTop: 12,
@@ -1870,6 +1989,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
 });
+
+
 
 
 

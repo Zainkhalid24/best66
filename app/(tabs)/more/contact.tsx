@@ -5,26 +5,28 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function ContactScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
 
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Contact</ThemedText>
-          <ThemedText type="bodyMuted">Reach us directly.</ThemedText>
+          <ThemedText type="title">{t('contact')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('contactIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">WhatsApp</ThemedText>
+          <ThemedText type="subtitle">{t('contactWhatsapp')}</ThemedText>
           <ThemedText type="bodyMuted">+964 700 000 0000</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Email</ThemedText>
+          <ThemedText type="subtitle">{t('contactEmailLabel')}</ThemedText>
           <ThemedText type="bodyMuted">hello@best6.app</ThemedText>
         </View>
       </ScrollView>
@@ -38,6 +40,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -53,3 +56,5 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+

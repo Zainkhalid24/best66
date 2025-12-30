@@ -77,7 +77,7 @@ export default function LoginScreen() {
           <Pressable
             onPress={handleSignIn}
             style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-            <ThemedText type="button" style={{ color: palette.surface }}>
+            <ThemedText type="button" style={{ color: palette.buttonText }}>
               Sign In
             </ThemedText>
           </Pressable>
@@ -164,3 +164,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
+

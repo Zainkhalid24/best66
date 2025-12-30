@@ -5,69 +5,57 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function HelpScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
 
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Help</ThemedText>
-          <ThemedText type="bodyMuted">Quick tips to get the most from Best6.</ThemedText>
+          <ThemedText type="title">{t('help')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Make predictions</ThemedText>
-          <ThemedText type="bodyMuted">Pick scores before kickoff to earn points.</ThemedText>
+          <ThemedText type="subtitle">{t('helpMakePredictionsTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpMakePredictionsBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Save your picks</ThemedText>
-          <ThemedText type="bodyMuted">Tap Save to lock your picks and update your points.</ThemedText>
+          <ThemedText type="subtitle">{t('helpSavePicksTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpSavePicksBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Scoring rules</ThemedText>
-          <ThemedText type="bodyMuted">
-            Exact score = 5 points. Correct outcome (win/draw) = 2 points.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpScoringRulesTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpScoringRulesBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Tie-breaker</ThemedText>
-          <ThemedText type="bodyMuted">
-            Choose the first goal minute (1-120). This helps break ties on the leaderboard.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpTieBreakerTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpTieBreakerBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Leaderboards</ThemedText>
-          <ThemedText type="bodyMuted">
-            Your total points and weekly form update after you save picks.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpLeaderboardsTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpLeaderboardsBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Fixtures & updates</ThemedText>
-          <ThemedText type="bodyMuted">
-            Live scores refresh automatically. If fixtures are missing, sample matches show up.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpFixturesTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpFixturesBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Sharing</ThemedText>
-          <ThemedText type="bodyMuted">
-            Use Share to post your weekly picks and invite friends to compete.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpSharingTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpSharingBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Account & profile</ThemedText>
-          <ThemedText type="bodyMuted">
-            Update your email or password in Account. Your name and email appear in Profile.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpAccountTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpAccountBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Need more help?</ThemedText>
-          <ThemedText type="bodyMuted">
-            Check FAQ or Support in the More tab for common questions and direct help.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('helpNeedHelpTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('helpNeedHelpBody')}</ThemedText>
         </View>
       </ScrollView>
     </Screen>
@@ -80,6 +68,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -95,3 +84,5 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+

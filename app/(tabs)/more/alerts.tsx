@@ -27,22 +27,22 @@ export default function AlertsScreen() {
         <ThemedView variant="surface" style={[styles.card, { borderColor: palette.divider }]}>
           <View style={styles.row}>
             <View style={styles.textBlock}>
-              <ThemedText type="subtitle">Kickoff reminders</ThemedText>
-              <ThemedText type="bodyMuted">Receive a nudge before your picks lock.</ThemedText>
+              <ThemedText type="subtitle">{t('alertsKickoffTitle')}</ThemedText>
+              <ThemedText type="bodyMuted">{t('alertsKickoffBody')}</ThemedText>
             </View>
             <Switch value={matchAlerts} onValueChange={setMatchAlerts} />
           </View>
           <View style={styles.row}>
             <View style={styles.textBlock}>
-              <ThemedText type="subtitle">Goal alerts</ThemedText>
-              <ThemedText type="bodyMuted">Get notified when scores change.</ThemedText>
+              <ThemedText type="subtitle">{t('alertsGoalTitle')}</ThemedText>
+              <ThemedText type="bodyMuted">{t('alertsGoalBody')}</ThemedText>
             </View>
             <Switch value={goalAlerts} onValueChange={setGoalAlerts} />
           </View>
           <View style={styles.row}>
             <View style={styles.textBlock}>
-              <ThemedText type="subtitle">League news</ThemedText>
-              <ThemedText type="bodyMuted">Highlights and summary updates.</ThemedText>
+              <ThemedText type="subtitle">{t('alertsLeagueTitle')}</ThemedText>
+              <ThemedText type="bodyMuted">{t('alertsLeagueBody')}</ThemedText>
             </View>
             <Switch value={newsAlerts} onValueChange={setNewsAlerts} />
           </View>

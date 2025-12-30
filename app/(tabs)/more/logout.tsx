@@ -7,12 +7,14 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { useAuth } from '@/context/auth-context';
+import { useLanguage } from '@/context/language-context';
 import { clearAppData } from '@/data/best6-store';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function LogoutScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
   const { signOut } = useAuth();
   const [busy, setBusy] = useState(false);
 
@@ -32,17 +34,15 @@ export default function LogoutScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Log out</ThemedText>
-          <ThemedText type="bodyMuted">
-            Signing out will clear local picks and saved data.
-          </ThemedText>
+          <ThemedText type="title">{t('logout')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('logoutIntro')}</ThemedText>
         </View>
         <Pressable
           onPress={handleLogout}
           disabled={busy}
           style={[styles.primaryButton, { backgroundColor: palette.danger }]}>
-          <ThemedText type="button" style={{ color: palette.surface }}>
-            {busy ? 'Signing out...' : 'Log out'}
+          <ThemedText type="button" style={{ color: palette.buttonText }}>
+            {busy ? t('logoutBusy') : t('logout')}
           </ThemedText>
         </Pressable>
       </ScrollView>
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 16,
   },
   card: {
@@ -70,3 +71,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+

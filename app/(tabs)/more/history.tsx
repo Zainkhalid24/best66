@@ -30,7 +30,7 @@ export default function HistoryScreen() {
           {t('history')}
         </ThemedText>
         {rounds.length === 0 ? (
-          <ThemedText type="bodyMuted">No saved rounds yet. Lock your picks first.</ThemedText>
+          <ThemedText type="bodyMuted">{t('historyEmpty')}</ThemedText>
         ) : (
           rounds.map((round) => (
             <ThemedView
@@ -39,16 +39,16 @@ export default function HistoryScreen() {
               style={[styles.roundCard, { borderColor: palette.divider }]}>
               <View style={styles.roundHeader}>
                 <ThemedText type="subtitle">{`${t('matchday')} ${round.matchday}`}</ThemedText>
-                <ThemedText type="bodyMuted">{round.totalPoints} pts</ThemedText>
+                <ThemedText type="bodyMuted">{`${round.totalPoints} ${t('historyPts')}`}</ThemedText>
               </View>
               {typeof round.firstGoalMinute === 'number' ? (
                 <ThemedText type="caption" style={{ color: palette.textMuted }}>
-                  {`First goal minute: ${round.firstGoalMinute}`}
+                  {`${t('historyFirstGoalMinute')}: ${round.firstGoalMinute}`}
                 </ThemedText>
               ) : null}
               {round.picks.slice(0, 3).map((pick) => (
                 <View key={pick.matchId} style={styles.pickRow}>
-                  <ThemedText type="body">{`Match #${pick.matchId}`}</ThemedText>
+                  <ThemedText type="body">{`${t('historyMatch')} #${pick.matchId}`}</ThemedText>
                   <ThemedText type="bodyMuted">
                     {pick.prediction.home ?? '-'}:{pick.prediction.away ?? '-'}
                   </ThemedText>
@@ -56,7 +56,7 @@ export default function HistoryScreen() {
               ))}
               {round.picks.length > 3 ? (
                 <ThemedText type="caption" style={{ color: palette.textMuted }}>
-                  +{round.picks.length - 3} more matches
+                  {`+${round.picks.length - 3} ${t('historyMoreMatches')}`}
                 </ThemedText>
               ) : null}
             </ThemedView>

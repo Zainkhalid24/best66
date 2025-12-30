@@ -89,7 +89,7 @@ export default function LeaguesGroupsScreen() {
           <Pressable
             onPress={handleCreate}
             style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-            <ThemedText type="button" style={{ color: palette.surface }}>
+            <ThemedText type="button" style={{ color: palette.buttonText }}>
               {t('createLeague')}
             </ThemedText>
           </Pressable>
@@ -184,3 +184,4 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
+

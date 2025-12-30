@@ -5,71 +5,57 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TermsScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
 
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Terms of Service</ThemedText>
-          <ThemedText type="bodyMuted">Review the terms before competing.</ThemedText>
+          <ThemedText type="title">{t('terms')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Fair play</ThemedText>
-          <ThemedText type="bodyMuted">No cheating, no duplicate accounts.</ThemedText>
+          <ThemedText type="subtitle">{t('termsFairPlayTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsFairPlayBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Eligibility</ThemedText>
-          <ThemedText type="bodyMuted">
-            You must provide accurate information and use the app legally in your region.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsEligibilityTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsEligibilityBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Picks and scoring</ThemedText>
-          <ThemedText type="bodyMuted">
-            Your picks lock when saved. Scoring follows the rules shown in the app.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsPicksTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsPicksBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Results and data</ThemedText>
-          <ThemedText type="bodyMuted">
-            Match data comes from external providers and may be delayed or corrected.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsResultsTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsResultsBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">User content</ThemedText>
-          <ThemedText type="bodyMuted">
-            You are responsible for what you share. Do not post abusive or illegal content.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsUserContentTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsUserContentBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Account security</ThemedText>
-          <ThemedText type="bodyMuted">
-            Keep your login details safe. We are not liable for losses from shared accounts.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsAccountSecurityTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsAccountSecurityBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Service changes</ThemedText>
-          <ThemedText type="bodyMuted">
-            We may update features, rules, or availability to improve the product.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsServiceChangesTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsServiceChangesBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Termination</ThemedText>
-          <ThemedText type="bodyMuted">
-            We may suspend accounts that violate these terms or harm other users.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsTerminationTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsTerminationBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Contact</ThemedText>
-          <ThemedText type="bodyMuted">
-            Questions about terms? Contact support from the More tab.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('termsContactTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('termsContactBody')}</ThemedText>
         </View>
       </ScrollView>
     </Screen>
@@ -82,6 +68,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -97,3 +84,5 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+

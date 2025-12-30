@@ -11,6 +11,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const timezones = ['UTC', 'GMT+2', 'GMT+4'];
 const teams = ['Arsenal', 'Barcelona', 'Real Madrid', 'Liverpool'];
+const languageLabels = {
+  en: { en: 'EN', ku: 'KU' },
+  ku: { en: 'ئینگلیزی', ku: 'کوردی' },
+};
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
@@ -42,8 +46,8 @@ export default function SettingsScreen() {
                 ]}>
                 <ThemedText
                   type="button"
-                  style={{ color: language === code ? palette.surface : palette.text }}>
-                  {code.toUpperCase()}
+                  style={{ color: language === code ? palette.buttonText : palette.text }}>
+                  {languageLabels[language]?.[code] ?? code.toUpperCase()}
                 </ThemedText>
               </Pressable>
             ))}
@@ -63,7 +67,7 @@ export default function SettingsScreen() {
                 ]}>
                 <ThemedText
                   type="button"
-                  style={{ color: timezone === zone ? palette.surface : palette.text }}>
+                  style={{ color: timezone === zone ? palette.buttonText : palette.text }}>
                   {zone}
                 </ThemedText>
               </Pressable>
@@ -84,7 +88,7 @@ export default function SettingsScreen() {
                 ]}>
                 <ThemedText
                   type="button"
-                  style={{ color: favoriteTeam === team ? palette.surface : palette.text }}>
+                  style={{ color: favoriteTeam === team ? palette.buttonText : palette.text }}>
                   {tTeam(team)}
                 </ThemedText>
               </Pressable>

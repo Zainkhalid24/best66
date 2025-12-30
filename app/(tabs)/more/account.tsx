@@ -5,12 +5,14 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { supabase } from '@/lib/supabase';
 
 export default function AccountScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,7 +34,7 @@ export default function AccountScreen() {
     setEmailError('');
     setEmailNotice('');
     if (!email.trim() || !email.includes('@')) {
-      setEmailError('Enter a valid email address.');
+      setEmailError(t('accountValidEmailError'));
       return;
     }
     const { error: updateError } = await supabase.auth.updateUser({ email: email.trim() });
@@ -40,22 +42,22 @@ export default function AccountScreen() {
       setEmailError(updateError.message);
       return;
     }
-    setEmailNotice('Email update requested. Check your inbox to confirm.');
+    setEmailNotice(t('accountEmailUpdateRequested'));
   };
 
   const handleChangePassword = async () => {
     setError('');
     setNotice('');
     if (!currentPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) {
-      setError('Fill in all password fields.');
+      setError(t('accountFillAllFields'));
       return;
     }
     if (newPassword.length < 6) {
-      setError('New password must be at least 6 characters.');
+      setError(t('accountPasswordMin'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError('New password and confirmation do not match.');
+      setError(t('accountPasswordMismatch'));
       return;
     }
     const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
@@ -63,7 +65,7 @@ export default function AccountScreen() {
       setError(updateError.message);
       return;
     }
-    setNotice('Password updated.');
+    setNotice(t('accountPasswordUpdated'));
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -74,29 +76,29 @@ export default function AccountScreen() {
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Account</ThemedText>
-          <ThemedText type="bodyMuted">Update your email and password securely.</ThemedText>
+          <ThemedText type="title">{t('account')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('accountIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Email</ThemedText>
+          <ThemedText type="subtitle">{t('accountEmailLabel')}</ThemedText>
           <ThemedText type="bodyMuted">{email}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Password</ThemedText>
-          <ThemedText type="bodyMuted">Last updated 2 weeks ago</ThemedText>
+          <ThemedText type="subtitle">{t('accountPasswordLabel')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('accountLastUpdated')}</ThemedText>
         </View>
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Change email</ThemedText>
+          <ThemedText type="subtitle">{t('accountChangeEmail')}</ThemedText>
           <View style={styles.field}>
             <ThemedText type="label" style={{ color: palette.textMuted }}>
-              Email
+              {t('accountEmailLabel')}
             </ThemedText>
             <TextInput
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
-              placeholder="you@email.com"
+              placeholder={t('accountEmailPlaceholder')}
               placeholderTextColor={palette.textMuted}
               style={[styles.input, { borderColor: palette.divider, color: palette.text }]}
             />
@@ -114,46 +116,46 @@ export default function AccountScreen() {
           <Pressable
             onPress={handleChangeEmail}
             style={[styles.primaryButton, { backgroundColor: palette.surfaceAlt }]}>
-            <ThemedText type="button">Update email</ThemedText>
+            <ThemedText type="button">{t('accountUpdateEmail')}</ThemedText>
           </Pressable>
         </View>
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Change password</ThemedText>
+          <ThemedText type="subtitle">{t('accountChangePassword')}</ThemedText>
           <View style={styles.field}>
             <ThemedText type="label" style={{ color: palette.textMuted }}>
-              Current password
+              {t('accountCurrentPassword')}
             </ThemedText>
             <TextInput
               value={currentPassword}
               onChangeText={setCurrentPassword}
               secureTextEntry
-              placeholder="Current password"
+              placeholder={t('accountCurrentPasswordPlaceholder')}
               placeholderTextColor={palette.textMuted}
               style={[styles.input, { borderColor: palette.divider, color: palette.text }]}
             />
           </View>
           <View style={styles.field}>
             <ThemedText type="label" style={{ color: palette.textMuted }}>
-              New password
+              {t('accountNewPassword')}
             </ThemedText>
             <TextInput
               value={newPassword}
               onChangeText={setNewPassword}
               secureTextEntry
-              placeholder="New password"
+              placeholder={t('accountNewPasswordPlaceholder')}
               placeholderTextColor={palette.textMuted}
               style={[styles.input, { borderColor: palette.divider, color: palette.text }]}
             />
           </View>
           <View style={styles.field}>
             <ThemedText type="label" style={{ color: palette.textMuted }}>
-              Confirm new password
+              {t('accountConfirmNewPassword')}
             </ThemedText>
             <TextInput
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
-              placeholder="Confirm new password"
+              placeholder={t('accountConfirmPasswordPlaceholder')}
               placeholderTextColor={palette.textMuted}
               style={[styles.input, { borderColor: palette.divider, color: palette.text }]}
             />
@@ -171,8 +173,8 @@ export default function AccountScreen() {
           <Pressable
             onPress={handleChangePassword}
             style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-            <ThemedText type="button" style={{ color: palette.surface }}>
-              Update password
+            <ThemedText type="button" style={{ color: palette.buttonText }}>
+              {t('accountUpdatePassword')}
             </ThemedText>
           </Pressable>
         </View>
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -218,3 +221,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+
+

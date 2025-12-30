@@ -5,61 +5,57 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function FaqScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
 
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">FAQ</ThemedText>
-          <ThemedText type="bodyMuted">Answers to common questions.</ThemedText>
+          <ThemedText type="title">{t('faq')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">How are points calculated?</ThemedText>
-          <ThemedText type="bodyMuted">Exact score = 5 points. Correct outcome (win/draw) = 2 points.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ1')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA1')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">When do picks lock?</ThemedText>
-          <ThemedText type="bodyMuted">Picks lock when you tap Save.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ2')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA2')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Can I edit my picks?</ThemedText>
-          <ThemedText type="bodyMuted">Yes. Tap Edit to unlock and update, then Save again.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ3')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA3')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">What is the tie-breaker?</ThemedText>
-          <ThemedText type="bodyMuted">
-            The first goal minute (1-120) breaks ties on the leaderboard.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('faqQ4')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA4')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Why do I see sample matches?</ThemedText>
-          <ThemedText type="bodyMuted">
-            If live fixtures are unavailable, the app shows sample matches instead.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('faqQ5')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA5')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">How often do scores update?</ThemedText>
-          <ThemedText type="bodyMuted">Live scores refresh automatically every 30 seconds.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ6')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA6')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Why is my leaderboard empty?</ThemedText>
-          <ThemedText type="bodyMuted">
-            Save your picks first. The leaderboard updates after a round is saved.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('faqQ7')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA7')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Can I share my picks?</ThemedText>
-          <ThemedText type="bodyMuted">Yes, use Share to post your weekly picks.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ8')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA8')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Where do I change my email or password?</ThemedText>
-          <ThemedText type="bodyMuted">Go to More → Account to update your details.</ThemedText>
+          <ThemedText type="subtitle">{t('faqQ9')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('faqA9')}</ThemedText>
         </View>
       </ScrollView>
     </Screen>
@@ -72,6 +68,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -87,3 +84,6 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+
+

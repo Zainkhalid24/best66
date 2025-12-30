@@ -7,37 +7,37 @@ import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const tiles = [
-  { id: 'profile', title: 'Profile', description: 'Your account card and stats.' },
-  { id: 'account', title: 'Account', description: 'Email, password, security.' },
-  { id: 'history', title: 'History', description: 'Review saved rounds and points.' },
-  { id: 'alerts', title: 'Alerts', description: 'Match reminders and score alerts.' },
-  { id: 'rewards', title: 'Rewards', description: 'Weekly missions and perks.' },
-  { id: 'settings', title: 'Settings', description: 'Language, timezone, favorites.' },
-  { id: 'help', title: 'Help', description: 'Quick tips and guides.' },
-  { id: 'faq', title: 'FAQ', description: 'Common questions answered.' },
-  { id: 'support', title: 'Support', description: 'Get help from our team.' },
-  { id: 'contact', title: 'Contact', description: 'Reach us directly.' },
-  { id: 'terms', title: 'Terms', description: 'Terms of service.' },
-  { id: 'privacy', title: 'Privacy', description: 'Privacy policy.' },
-  { id: 'logout', title: 'Log out', description: 'Sign out of Best6.' },
+  { id: 'profile', titleKey: 'profile', descriptionKey: 'profileDesc' },
+  { id: 'account', titleKey: 'account', descriptionKey: 'accountDesc' },
+  { id: 'history', titleKey: 'history', descriptionKey: 'historyDesc' },
+  { id: 'alerts', titleKey: 'alerts', descriptionKey: 'alertsDesc' },
+  { id: 'rewards', titleKey: 'rewards', descriptionKey: 'rewardsDesc' },
+  { id: 'settings', titleKey: 'settings', descriptionKey: 'settingsDesc' },
+  { id: 'help', titleKey: 'help', descriptionKey: 'helpDesc' },
+  { id: 'faq', titleKey: 'faq', descriptionKey: 'faqDesc' },
+  { id: 'support', titleKey: 'support', descriptionKey: 'supportDesc' },
+  { id: 'contact', titleKey: 'contact', descriptionKey: 'contactDesc' },
+  { id: 'terms', titleKey: 'terms', descriptionKey: 'termsDesc' },
+  { id: 'privacy', titleKey: 'privacy', descriptionKey: 'privacyDesc' },
+  { id: 'logout', titleKey: 'logout', descriptionKey: 'logoutDesc' },
 ];
 
 export default function MoreScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <ThemedView variant="surface" style={[styles.header, { borderColor: palette.divider }]}>
           <Best6Logo size={56} />
           <View style={styles.headerText}>
-            <ThemedText type="title">Control Center</ThemedText>
-            <ThemedText type="bodyMuted">
-              Manage your predictions, squads, and rewards in one place.
-            </ThemedText>
+            <ThemedText type="title">{t('controlCenterTitle')}</ThemedText>
+            <ThemedText type="bodyMuted">{t('controlCenterBody')}</ThemedText>
           </View>
         </ThemedView>
 
@@ -54,8 +54,8 @@ export default function MoreScreen() {
                   opacity: pressed ? 0.9 : 1,
                 },
               ]}>
-              <ThemedText type="subtitle">{tile.title}</ThemedText>
-              <ThemedText type="bodyMuted">{tile.description}</ThemedText>
+              <ThemedText type="subtitle">{t(tile.titleKey)}</ThemedText>
+              <ThemedText type="bodyMuted">{t(tile.descriptionKey)}</ThemedText>
             </Pressable>
           ))}
           <Pressable
@@ -68,8 +68,8 @@ export default function MoreScreen() {
                 opacity: pressed ? 0.9 : 1,
               },
             ]}>
-            <ThemedText type="subtitle">League Workshop</ThemedText>
-            <ThemedText type="bodyMuted">Create or join private leagues.</ThemedText>
+            <ThemedText type="subtitle">{t('leagueWorkshop')}</ThemedText>
+            <ThemedText type="bodyMuted">{t('leagueWorkshopDesc')}</ThemedText>
           </Pressable>
         </View>
       </ScrollView>
@@ -114,3 +114,5 @@ const styles = StyleSheet.create({
     gap: 6,
   },
 });
+
+

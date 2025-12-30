@@ -2,6 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -40,6 +41,16 @@ export default function RootLayout() {
   const [splashDone, setSplashDone] = useState(false);
   const splashOpacity = useRef(new Animated.Value(1)).current;
   const palette = useMemo(() => Colors[colorScheme ?? 'light'], [colorScheme]);
+  const navTheme = useMemo(() => {
+    const baseTheme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...baseTheme,
+      colors: {
+        ...baseTheme.colors,
+        background: 'transparent',
+      },
+    };
+  }, [colorScheme]);
 
   useEffect(() => {
     if (!fontsLoaded) {
@@ -60,31 +71,49 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthGate>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            </Stack>
-          </AuthGate>
-          {!splashDone && (
-            <Animated.View
-              pointerEvents="none"
-              style={[
-                StyleSheet.absoluteFillObject,
-                styles.splash,
-                { backgroundColor: palette.background, opacity: splashOpacity },
-              ]}>
-              <View style={styles.splashInner}>
-                <Best6Logo size={92} />
-                <ThemedText type="title" style={styles.splashTitle}>
-                  Best6
-                </ThemedText>
-                <ThemedText type="bodyMuted">Predict. Play. Rise.</ThemedText>
-              </View>
-            </Animated.View>
-          )}
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <ThemeProvider value={navTheme}>
+          <View style={styles.appRoot}>
+            <LinearGradient
+              colors={[
+                palette.backgroundTop,
+                palette.backgroundMid ?? palette.backgroundBottom,
+                palette.backgroundBottom,
+              ]}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <AuthGate>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              </Stack>
+            </AuthGate>
+            {!splashDone && (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  styles.splash,
+                  { opacity: splashOpacity },
+                ]}>
+                <LinearGradient
+                  colors={[
+                    palette.backgroundTop,
+                    palette.backgroundMid ?? palette.backgroundBottom,
+                    palette.backgroundBottom,
+                  ]}
+                  style={StyleSheet.absoluteFillObject}
+                />
+                <View style={styles.splashInner}>
+                  <Best6Logo size={92} />
+                  <ThemedText type="title" style={styles.splashTitle}>
+                    Best6
+                  </ThemedText>
+                  <ThemedText type="bodyMuted">Predict. Play. Rise.</ThemedText>
+                </View>
+              </Animated.View>
+            )}
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          </View>
         </ThemeProvider>
       </LanguageProvider>
     </AuthProvider>
@@ -112,6 +141,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 const styles = StyleSheet.create({
+  appRoot: {
+    flex: 1,
+  },
   splash: {
     alignItems: 'center',
     justifyContent: 'center',

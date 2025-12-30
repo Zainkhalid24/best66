@@ -10,9 +10,9 @@ import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const rewards = [
-  { id: 'r1', title: 'Perfect Weekend', detail: 'Hit 4 exact scores', points: 60 },
-  { id: 'r2', title: 'Derby Specialist', detail: 'Pick all derby winners', points: 40 },
-  { id: 'r3', title: 'Comeback King', detail: 'Predict 3 upsets', points: 30 },
+  { id: 'r1', titleKey: 'rewardTitleR1', detailKey: 'rewardDetailR1', points: 60 },
+  { id: 'r2', titleKey: 'rewardTitleR2', detailKey: 'rewardDetailR2', points: 40 },
+  { id: 'r3', titleKey: 'rewardTitleR3', detailKey: 'rewardDetailR3', points: 30 },
 ];
 
 export default function RewardsScreen() {
@@ -28,7 +28,7 @@ export default function RewardsScreen() {
           {t('rewards')}
         </ThemedText>
         <ThemedText type="bodyMuted" style={styles.subtitle}>
-          Challenges unlock weekly boosts and styling rewards.
+          {t('rewardsIntro')}
         </ThemedText>
 
         <View style={styles.list}>
@@ -39,8 +39,8 @@ export default function RewardsScreen() {
               style={[styles.card, { borderColor: palette.divider }]}>
               <View style={styles.cardRow}>
                 <View style={styles.textBlock}>
-                  <ThemedText type="subtitle">{reward.title}</ThemedText>
-                  <ThemedText type="bodyMuted">{reward.detail}</ThemedText>
+                  <ThemedText type="subtitle">{t(reward.titleKey)}</ThemedText>
+                  <ThemedText type="bodyMuted">{t(reward.detailKey)}</ThemedText>
                 </View>
                 <View style={[styles.pointsBadge, { backgroundColor: palette.surfaceAlt }]}>
                   <ThemedText type="caption">+{reward.points}</ThemedText>
@@ -92,3 +92,5 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
 });
+
+

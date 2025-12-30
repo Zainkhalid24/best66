@@ -5,62 +5,49 @@ import { BackButton } from '@/components/back-button';
 import { Screen } from '@/components/screen';
 import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
+import { useLanguage } from '@/context/language-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function PrivacyScreen() {
   const colorScheme = useColorScheme();
   const palette = Colors[colorScheme ?? 'light'];
+  const { t } = useLanguage();
 
   return (
     <Screen style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <BackButton />
         <View style={[styles.card, { backgroundColor: palette.surface, borderColor: palette.divider }]}>
-          <ThemedText type="title">Privacy Policy</ThemedText>
-          <ThemedText type="bodyMuted">How we handle your data.</ThemedText>
+          <ThemedText type="title">{t('privacy')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyIntro')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Data collection</ThemedText>
-          <ThemedText type="bodyMuted">
-            We collect your name, email, picks, and usage data needed to run Best6.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacyDataCollectionTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyDataCollectionBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">How we use data</ThemedText>
-          <ThemedText type="bodyMuted">
-            Data is used to keep your account secure, save picks, calculate points, and show
-            leaderboards.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacyDataUseTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyDataUseBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Third-party services</ThemedText>
-          <ThemedText type="bodyMuted">
-            We rely on trusted providers for authentication, storage, and match data.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacyThirdPartyTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyThirdPartyBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Sharing</ThemedText>
-          <ThemedText type="bodyMuted">
-            We do not sell your personal data. Public leaderboards may show your name.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacySharingTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacySharingBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Security</ThemedText>
-          <ThemedText type="bodyMuted">
-            We use standard security practices, but no system is completely secure.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacySecurityTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacySecurityBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Your control</ThemedText>
-          <ThemedText type="bodyMuted">
-            You can request access, correction, or deletion of your data at any time.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacyControlTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyControlBody')}</ThemedText>
         </View>
         <View style={[styles.item, { borderColor: palette.divider }]}>
-          <ThemedText type="subtitle">Contact</ThemedText>
-          <ThemedText type="bodyMuted">
-            Questions about privacy? Contact support from the More tab.
-          </ThemedText>
+          <ThemedText type="subtitle">{t('privacyContactTitle')}</ThemedText>
+          <ThemedText type="bodyMuted">{t('privacyContactBody')}</ThemedText>
         </View>
       </ScrollView>
     </Screen>
@@ -73,6 +60,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    paddingBottom: 120,
     gap: 12,
   },
   card: {
@@ -88,3 +76,5 @@ const styles = StyleSheet.create({
     gap: 4,
   },
 });
+
+

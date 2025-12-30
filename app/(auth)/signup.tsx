@@ -91,7 +91,7 @@ export default function SignupScreen() {
           <Pressable
             onPress={handleSignup}
             style={[styles.primaryButton, { backgroundColor: palette.tint }]}>
-            <ThemedText type="button" style={{ color: palette.surface }}>
+            <ThemedText type="button" style={{ color: palette.buttonText }}>
               Create account
             </ThemedText>
           </Pressable>
@@ -168,3 +168,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
+
